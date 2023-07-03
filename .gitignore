@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# distribution / packaging
+.Python
+build/
+
+
+# flask stuff:
+instance/
+.webassets-cache
+
+# system files
+.DS_Store
+
+# project files
+app/db
+
+# ide
+.vscode
+.idea
+*.iml
+
+# env files
+.env*
+!.env.example

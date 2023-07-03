@@ -1,0 +1,15 @@
+services:
+  web:
+    build: ./app
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    ports:
+      - "9999:9999"
+    environment:
+      - FLASK_APP=app.py
+    command: ["flask", "run", "--host=0.0.0.0", "--port=9999", "--debug"]
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./app :/app/app
