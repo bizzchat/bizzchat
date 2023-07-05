@@ -16,10 +16,12 @@ from embedchain.chunkers.web_page import WebPageChunker
 from embedchain.chunkers.qna_pair import QnaPairChunker
 from embedchain.chunkers.text import TextChunker
 from embedchain.vectordb.chroma_db import ChromaDB
+from embedchain.vectordb.pinecore_db import PineconeDB
 
 load_dotenv()
 
-embeddings = OpenAIEmbeddings()
+
+MODEL = "text-embedding-ada-002"
 
 ABS_PATH = os.getcwd()
 DB_DIR = os.path.join(ABS_PATH, "db")
@@ -34,7 +36,7 @@ class EmbedChain:
         :param db: The instance of the VectorDB subclass.
         """
         if db is None:
-            db = ChromaDB()
+            db = PineconeDB()
         self.db_client = db.client
         self.collection = db.collection
         self.user_asks = []
@@ -48,11 +50,11 @@ class EmbedChain:
         :raises ValueError: If an unsupported data type is provided.
         """
         loaders = {
-            'youtube_video': YoutubeVideoLoader(),
-            'pdf_file': PdfFileLoader(),
-            'web_page': WebPageLoader(),
-            'qna_pair': LocalQnaPairLoader(),
-            'text': LocalTextLoader(),
+            "youtube_video": YoutubeVideoLoader(),
+            "pdf_file": PdfFileLoader(),
+            "web_page": WebPageLoader(),
+            "qna_pair": LocalQnaPairLoader(),
+            "text": LocalTextLoader(),
         }
         if data_type in loaders:
             return loaders[data_type]
@@ -68,11 +70,11 @@ class EmbedChain:
         :raises ValueError: If an unsupported data type is provided.
         """
         chunkers = {
-            'youtube_video': YoutubeVideoChunker(),
-            'pdf_file': PdfFileChunker(),
-            'web_page': WebPageChunker(),
-            'qna_pair': QnaPairChunker(),
-            'text': TextChunker(),
+            "youtube_video": YoutubeVideoChunker(),
+            "pdf_file": PdfFileChunker(),
+            "web_page": WebPageChunker(),
+            "qna_pair": QnaPairChunker(),
+            "text": TextChunker(),
         }
         if data_type in chunkers:
             return chunkers[data_type]
@@ -119,46 +121,47 @@ class EmbedChain:
         documents = embeddings_data["documents"]
         metadatas = embeddings_data["metadatas"]
         ids = embeddings_data["ids"]
+
+        metas = []
+        for i, metadata in enumerate(metadatas):
+            metas.append({"url": metadata["url"], "text": documents[i]})
+
         # get existing ids, and discard doc if any common id exist.
-        existing_docs = self.collection.get(
-            ids=ids,
-            # where={"url": url}
-        )
-        existing_ids = set(existing_docs["ids"])
+        # existing_docs = self.collection.fetch([])
+        # existing_ids=list( (existing_docs.vectors).keys())
+        # print(existing_ids)
+        # existing_ids = set(existing_ids)
 
-        if len(existing_ids):
-            data_dict = {id: (doc, meta) for id, doc, meta in zip(ids, documents, metadatas)}
-            data_dict = {id: value for id, value in data_dict.items() if id not in existing_ids}
+        # if len(existing_ids):
+        #     data_dict = {id: (doc, meta) for id, doc, meta in zip(ids, documents, metadatas)}
+        #     data_dict = {id: value for id, value in data_dict.items() if id not in existing_ids}
 
-            if not data_dict:
-                print(f"All data from {url} already exists in the database.")
-                return
+        #     if not data_dict:
+        #         print(f"All data from {url} already exists in the database.")
+        #         return
 
-            ids = list(data_dict.keys())
-            documents, metadatas = zip(*data_dict.values())
+        #     ids = list(data_dict.keys())
+        #     documents, metadatas = zip(*data_dict.values())
+        # print(ids[1],documents[1])
 
-        self.collection.add(
-            documents=documents,
-            metadatas=metadatas,
-            ids=ids
-        )
-        print(f"Successfully saved {url}. Total chunks count: {self.collection.count()}")
+        # print(ids)
+        res = openai.Embedding.create(input=documents, engine=MODEL)
+        embeds = [record["embedding"] for record in res["data"]]
+        to_upsert = zip(ids, embeds, metas)
+        print(f"Successfully saved {url}. Total chunks count: {len(ids)}")
+        result = self.collection.upsert(vectors=list(to_upsert), namespace="Test")
+        return result
 
     def _format_result(self, results):
-        return [
-            (Document(page_content=result[0], metadata=result[1] or {}), result[2])
-            for result in zip(
-                results["documents"][0],
-                results["metadatas"][0],
-                results["distances"][0],
-            )
-        ]
+        content = ""
+        for result in results:
+            content = content + result["metadata"]["text"]
+
+        return content
 
     def get_openai_answer(self, prompt):
         messages = []
-        messages.append({
-            "role": "user", "content": prompt
-        })
+        messages.append({"role": "user", "content": prompt})
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=messages,
@@ -176,13 +179,14 @@ class EmbedChain:
         :param input_query: The query to use.
         :return: The content of the document that matched your query.
         """
-        result = self.collection.query(
-            query_texts=[input_query,],
-            n_results=1,
-        )
-        result_formatted = self._format_result(result)
-        content = result_formatted[0][0].page_content
-        return content
+        query_vector = openai.Embedding.create(input=input_query, engine=MODEL)["data"][
+            0
+        ]["embedding"]
+        results = self.collection.query(
+            vector=query_vector, top_k=3, include_metadata=True, namespace="Test"
+        )["matches"]
+        result_formatted = self._format_result(results)
+        return result_formatted
 
     def generate_prompt(self, input_query, context):
         """
@@ -192,7 +196,7 @@ class EmbedChain:
         :param context: Similar documents to the query used as context.
         :return: The prompt
         """
-        prompt = f"""Use the following pieces of context to answer the query at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+        prompt = f"""Use the following pieces of context first to answer the query at the end. If you don't find the answer then answer from your knowledge else just say that you don't know.
         {context}
         Query: {input_query}
         Helpful Answer:
@@ -234,4 +238,5 @@ class App(EmbedChain):
     adds(data_type, url): adds the data from the given URL to the vector db.
     query(query): finds answer to the given query using vector database and LLM.
     """
+
     pass

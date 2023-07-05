@@ -4,8 +4,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 TEXT_SPLITTER_CHUNK_PARAMS = {
-    "chunk_size": 500,
-    "chunk_overlap": 0,
+    "chunk_size": 1000,
+    "chunk_overlap": 50,
     "length_function": len,
 }
 
