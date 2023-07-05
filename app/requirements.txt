@@ -8,3 +8,4 @@ youtube-transcript-api==0.6.1
 beautifulsoup4==4.12.1
 pypdf==3.11.1
 pytube==15.0.0
+pinecone-client
