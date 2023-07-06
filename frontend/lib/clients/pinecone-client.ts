@@ -1,0 +1,3 @@
+class PineconeClient {
+  constructor() {}
+}
