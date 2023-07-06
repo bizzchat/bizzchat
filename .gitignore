@@ -25,4 +25,3 @@ app/db
 
 # env files
 .env*
-!.env.example
