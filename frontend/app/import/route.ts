@@ -1,14 +1,14 @@
 import { EmbedChain } from "./embeddings";
 import { NextResponse } from "next/server";
+import { JSDOM } from "jsdom";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const embedchain = new EmbedChain();
   await embedchain.init_app;
+  const req_params = await req.json();
+  console.log(req_params.file_type);
 
-  const result = await embedchain.add(
-    "pdf_file",
-    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/411a4b81-6171-4960-881b-7e3627e8d24b.pdf"
-  );
+  const result = await embedchain.add(req_params.file_type, req_params.url);
 
   return NextResponse.json({ text: result });
 }

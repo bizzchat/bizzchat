@@ -1,13 +1,16 @@
+import * as pdfjsLib from "pdfjs-dist";
+
 import { clean_string } from "../../utils";
 import { LoaderResult } from "../_lib/LoaderResult";
 import { Metadata } from "../_lib/Metadata";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 
-class PdfFileLoader {
+import { CSVLoader } from "langchain/document_loaders/fs/csv";
+
+class CSVFileLoader {
   async load_data(url: string): Promise<LoaderResult> {
-    const pdf_data = await (await fetch(url)).blob();
+    const csv_data = await (await fetch(url)).blob();
 
-    const loader = new PDFLoader(pdf_data, { splitPages: false });
+    const loader = new CSVLoader(csv_data);
 
     const docs = await loader.load();
 
@@ -23,4 +26,4 @@ class PdfFileLoader {
     return output;
   }
 }
-export { PdfFileLoader };
+export { CSVFileLoader };
