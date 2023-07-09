@@ -1,25 +1,25 @@
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Document } from "langchain/document";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 
 import { BaseLoader } from "./_base/load";
+import { CSVFileLoader } from "./_csv/load-csv";
 import { PdfFileLoader } from "./_pdf/load-pdf";
 import { WebPageLoader } from "./_webpage/load-webpage";
 import { YouTubeLoader } from "./_youtube-video/load-youtube";
-import { CSVFileLoader } from "./_csv/load-csv";
 
 import { BaseChunker } from "./_base/chunk";
-import { PdfFileChunker } from "./_pdf_local/chunk-pdf";
+import { CSVFileChunker } from "./_csv/chunk-csv";
+import { PdfFileChunker } from "./_pdf/chunk-pdf";
 import { WebPageChunker } from "./_webpage/chunk-webpage";
 import { YouTubeChunker } from "./_youtube-video/chunk-youtube";
-import { CSVFileChunker } from "./_csv/chunk-csv";
 
-import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { BaseVectorDB } from "@/lib/clients/BaseVectorDb";
+import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-import { DataType } from "./_lib/DataType";
-import { Input, LocalInput, RemoteInput } from "./_lib/Input";
 import { FormattedResult } from "./_lib/FormattedResult";
+import { Input, LocalInput, RemoteInput } from "./_lib/Input";
+import { URLDataType } from "./_lib/import-types";
 
 const configuration = new Configuration({
   apiKey: process.env.OPEN_API_KEY,
@@ -30,7 +30,7 @@ class EmbedChain {
   db_client: any;
   // TODO: Definitely assign
   collection!: PineconeStore;
-  user_asks: [DataType, Input][] = [];
+  user_asks: [URLDataType, Input][] = [];
   init_app: Promise<void>;
 
   constructor(db: BaseVectorDB | null = null) {
@@ -62,27 +62,27 @@ class EmbedChain {
     this.user_asks = [];
   }
 
-  _get_loader(data_type: DataType) {
-    const loaders: { [t in DataType]: BaseLoader } = {
+  _get_loader(data_type: URLDataType) {
+    const loaders: { [t in URLDataType]: BaseLoader } = {
       pdf: new PdfFileLoader(),
       webpage: new WebPageLoader(),
       youtube_video: new YouTubeLoader(),
-      csv_file: new CSVFileLoader(),
+      csv: new CSVFileLoader(),
     };
     return loaders[data_type];
   }
 
-  _get_chunker(data_type: DataType) {
-    const chunkers: { [t in DataType]: BaseChunker } = {
+  _get_chunker(data_type: URLDataType) {
+    const chunkers: { [t in URLDataType]: BaseChunker } = {
       pdf: new PdfFileChunker(),
       webpage: new WebPageChunker(),
       youtube_video: new YouTubeChunker(),
-      csv_file: new CSVFileChunker(),
+      csv: new CSVFileChunker(),
     };
     return chunkers[data_type];
   }
 
-  async add(data_type: DataType, url: RemoteInput): Promise<any> {
+  async add(data_type: URLDataType, url: RemoteInput): Promise<any> {
     const loader = this._get_loader(data_type);
     const chunker = this._get_chunker(data_type);
     this.user_asks.push([data_type, url]);
@@ -90,7 +90,7 @@ class EmbedChain {
     return result;
   }
 
-  async add_local(data_type: DataType, content: LocalInput) {
+  async add_local(data_type: URLDataType, content: LocalInput) {
     const loader = this._get_loader(data_type);
     const chunker = this._get_chunker(data_type);
     this.user_asks.push([data_type, content]);
