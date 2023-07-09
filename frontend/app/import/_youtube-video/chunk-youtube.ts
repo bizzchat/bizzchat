@@ -13,7 +13,7 @@ const TEXT_SPLITTER_CHUNK_PARAMS: TextSplitterChunkParams = {
   keepSeparator: false,
 };
 
-class WebPageChunker extends BaseChunker {
+class YouTubeChunker extends BaseChunker {
   constructor() {
     const text_splitter = new RecursiveCharacterTextSplitter(
       TEXT_SPLITTER_CHUNK_PARAMS
@@ -22,4 +22,4 @@ class WebPageChunker extends BaseChunker {
   }
 }
 
-export { WebPageChunker };
+export { YouTubeChunker };
