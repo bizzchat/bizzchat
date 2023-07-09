@@ -5,11 +5,13 @@ import { BaseLoader } from "./_base/load";
 import { PdfFileLoader } from "./_pdf/load-pdf";
 import { WebPageLoader } from "./_webpage/load-webpage";
 import { YouTubeLoader } from "./_youtube-video/load-youtube";
+import { CSVFileLoader } from "./_csv/load-csv";
 
 import { BaseChunker } from "./_base/chunk";
-import { PdfFileChunker } from "./_pdf/chunk-pdf";
+import { PdfFileChunker } from "./_pdf_local/chunk-pdf";
 import { WebPageChunker } from "./_webpage/chunk-webpage";
 import { YouTubeChunker } from "./_youtube-video/chunk-youtube";
+import { CSVFileChunker } from "./_csv/chunk-csv";
 
 import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { BaseVectorDB } from "@/lib/clients/BaseVectorDb";
@@ -62,18 +64,20 @@ class EmbedChain {
 
   _get_loader(data_type: DataType) {
     const loaders: { [t in DataType]: BaseLoader } = {
-      pdf_file: new PdfFileLoader(),
-      web_page: new WebPageLoader(),
+      pdf: new PdfFileLoader(),
+      webpage: new WebPageLoader(),
       youtube_video: new YouTubeLoader(),
+      csv_file: new CSVFileLoader(),
     };
     return loaders[data_type];
   }
 
   _get_chunker(data_type: DataType) {
     const chunkers: { [t in DataType]: BaseChunker } = {
-      pdf_file: new PdfFileChunker(),
-      web_page: new WebPageChunker(),
+      pdf: new PdfFileChunker(),
+      webpage: new WebPageChunker(),
       youtube_video: new YouTubeChunker(),
+      csv_file: new CSVFileChunker(),
     };
     return chunkers[data_type];
   }

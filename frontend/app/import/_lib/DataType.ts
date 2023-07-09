@@ -1,1 +1,1 @@
-export type DataType = "pdf_file" | "web_page" | "youtube_video";
+export type DataType = "pdf" | "webpage" | "youtube_video" | "csv_file";
