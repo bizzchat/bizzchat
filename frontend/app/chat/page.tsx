@@ -22,7 +22,7 @@ export default function Chat() {
   messages.push(message);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-800">
+    <div className="flex flex-col min-h-screen">
       <div className="flex flex-col items-center w-full p-4 mx-auto grow">
         <div className="w-full max-w-2xl stretch">
           {messages.length > 0

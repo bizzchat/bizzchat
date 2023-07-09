@@ -2,21 +2,22 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 // import "dotenv/config.js";
 // import fg from "fast-glob";
 
-import { NextResponse } from "next/server";
+import * as crypto from "crypto";
 import { Document } from "langchain/document";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import * as crypto from "crypto";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
+  console.log(await req.json());
   const embeddings = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPEN_API_KEY,
   });
 
   const file =
-    "/Users/mohitagarwal/Projects/bizzchat/frontend/app/import/_pdf/_files/examplePdf.pdf";
+    "/Users/mohitagarwal/Projects/ai/bizzchat/frontend/app/import/_pdf/_files/examplePdf.pdf";
   const loader = new PDFLoader(file, { splitPages: false });
 
   const splitter = new RecursiveCharacterTextSplitter({
