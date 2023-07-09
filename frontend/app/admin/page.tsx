@@ -19,22 +19,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { URLDataType } from "../import/_lib/import-types";
 
-const options = [
-  { value: "webpage", label: "Web Page URL" },
-  { value: "pdf", label: "PDF URL" },
-  { value: "youtube_video", label: "Youtube Video URL" },
+const options: Option[] = [
+  { value: URLDataType.webpage, label: "Web Page URL" },
+  { value: URLDataType.pdf, label: "PDF File URL" },
+  { value: URLDataType.youtube_video, label: "Youtube Video URL" },
+  { value: URLDataType.csv, label: "CSV File URL" },
 ];
 
-enum FileTypeEnum {
-  webpage = "webpage",
-  pdf = "pdf",
-  youtube_video = "youtube_video",
-}
+type Option = {
+  value: URLDataType;
+  label: String;
+};
 
 interface IFormInput {
   url: String;
-  file_type: FileTypeEnum;
+  file_type: URLDataType;
 }
 
 export default function Admin() {
@@ -86,7 +87,7 @@ export default function Admin() {
                       <Select
                         {...field}
                         onValueChange={(str) =>
-                          field.onChange(str as FileTypeEnum)
+                          field.onChange(str as URLDataType)
                         }
                       >
                         <SelectTrigger>
