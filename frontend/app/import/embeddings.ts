@@ -22,7 +22,7 @@ import { Input, LocalInput, RemoteInput } from "./_lib/Input";
 import { URLDataType } from "./_lib/import-types";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPEN_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -171,8 +171,8 @@ class EmbedChain {
   async query(input_query: string) {
     const context = await this.retrieve_from_database(input_query);
     const prompt = this.generate_prompt(input_query, context);
-    const answer = await this.get_openai_answer(prompt);
-    return answer;
+    // const answer = await this.get_openai_answer(prompt);
+    return prompt;
   }
 }
 

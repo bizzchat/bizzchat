@@ -4,7 +4,7 @@ import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { BaseVectorDB } from "./BaseVectorDb";
 
 const embedder = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPEN_API_KEY,
+  openAIApiKey: process.env.OPENAI_API_KEY,
 });
 class PineconeDB extends BaseVectorDB {
   client: PineconeClient | undefined;
