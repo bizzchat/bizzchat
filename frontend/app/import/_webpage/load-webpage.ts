@@ -33,6 +33,7 @@ class WebPageLoader {
     if (!content) {
       throw new Error("Web page content is empty.");
     }
+
     content = clean_string(content);
     const meta_data = {
       url: url,
