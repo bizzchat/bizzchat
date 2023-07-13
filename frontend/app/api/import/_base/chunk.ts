@@ -1,8 +1,6 @@
 import { createHash } from "crypto";
+import { ChunkResult, Input, LoaderResult } from "../_lib/import-types";
 import { BaseLoader } from "./load";
-import { LoaderResult } from "../_lib/LoaderResult";
-import { ChunkResult } from "../_lib/Chunkresult";
-import { Input } from "../_lib/Input";
 
 class BaseChunker {
   text_splitter: any; // the type of text_splitter is not specified in your code

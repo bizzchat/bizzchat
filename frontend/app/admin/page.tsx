@@ -1,5 +1,6 @@
 "use client";
 
+import { URLDataType } from "@/app/api/import/_lib/import-types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { URLDataType } from "../import/_lib/import-types";
 
 const options: Option[] = [
   { value: URLDataType.webpage, label: "Web Page URL" },
@@ -47,7 +47,7 @@ export default function Admin() {
   } = useForm<IFormInput>();
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     console.log(data);
-    const res = await fetch("/import", {
+    const res = await fetch("/api/import", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

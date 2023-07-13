@@ -17,9 +17,13 @@ import { BaseVectorDB } from "@/lib/clients/BaseVectorDb";
 import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-import { FormattedResult } from "./_lib/FormattedResult";
-import { Input, LocalInput, RemoteInput } from "./_lib/Input";
-import { URLDataType } from "./_lib/import-types";
+import {
+  FormattedResult,
+  Input,
+  LocalInput,
+  RemoteInput,
+  URLDataType,
+} from "./_lib/import-types";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,

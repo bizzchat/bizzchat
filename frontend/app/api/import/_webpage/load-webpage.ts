@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { clean_string } from "@/app/utils";
+import { clean_string } from "@/app/api/import/_lib/utils";
 import { JSDOM } from "jsdom";
 
 class WebPageLoader {

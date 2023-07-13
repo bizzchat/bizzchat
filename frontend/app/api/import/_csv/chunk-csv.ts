@@ -1,5 +1,5 @@
-import { BaseChunker } from "../_base/chunk";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { BaseChunker } from "../_base/chunk";
 
 interface TextSplitterChunkParams {
   chunkSize: number;

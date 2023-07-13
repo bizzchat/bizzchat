@@ -1,6 +1,5 @@
-import { EmbedChain } from "./embeddings";
 import { NextResponse } from "next/server";
-import { JSDOM } from "jsdom";
+import { EmbedChain } from "./embeddings";
 
 export async function POST(req: Request) {
   const embedchain = new EmbedChain();

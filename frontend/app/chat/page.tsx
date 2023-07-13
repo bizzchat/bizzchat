@@ -19,9 +19,6 @@ export default function Chat() {
 
   return (
     <div>
-      {/* <div className="flex flex-col min-h-screen">
-      <div className="flex flex-col items-center w-full mx-auto grow">
-        <div className="w-full max-w-2xl stretch pb-[200px] pt-4 md:pt-10"></div> */}
       <div className="flex flex-col items-center w-full mx-auto grow">
         <div className="w-full max-w-3xl stretch pb-[200px] pt-10">
           {messages.map((message, index) => (

@@ -1,4 +1,4 @@
-import { EmbedChain } from "@/app/import/embeddings";
+import { EmbedChain } from "@/app/api/import/embeddings";
 import { LangChainStream, Message, StreamingTextResponse } from "ai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { AIChatMessage, HumanChatMessage } from "langchain/schema";

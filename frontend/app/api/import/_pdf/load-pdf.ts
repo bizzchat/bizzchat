@@ -1,7 +1,6 @@
-import { clean_string } from "../../utils";
-import { LoaderResult } from "../_lib/LoaderResult";
-import { Metadata } from "../_lib/Metadata";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { LoaderResult, Metadata } from "../_lib/import-types";
+import { clean_string } from "../_lib/utils";
 
 class PdfFileLoader {
   async load_data(url: string): Promise<LoaderResult> {

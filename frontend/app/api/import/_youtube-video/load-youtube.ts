@@ -1,6 +1,5 @@
-import { clean_string } from "../../utils";
-import { LoaderResult } from "../_lib/LoaderResult";
-import { Metadata } from "../_lib/Metadata";
+import { LoaderResult, Metadata } from "../_lib/import-types";
+import { clean_string } from "../_lib/utils";
 
 import { YoutubeTranscript } from "youtube-transcript";
 
