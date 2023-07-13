@@ -1,98 +1,73 @@
-const INDICATOR_TYPE = {
-  TALKING: "talking",
-  SILENT: "silent",
-  GENERATING: "generating",
-  IDLE: "idle",
-};
+import { Message } from "ai";
+// import remarkGfm from "remark-gfm";
+// import remarkMath from "remark-math";
 
-export function ChatMessage({ text, isUser, indicator }: any) {
-  return (
-    <div className="w-full">
-      <div className="flex gap-4 p-4 m-auto text-base">
-        <div className="flex flex-col gap-2">
-          <div
-            className={
-              "flex items-center justify-center w-8 h-8 min-w-8 mih-h-8 " +
-              (isUser ? "fill-yellow-500" : "fill-primary")
-            }
-          >
-            {isUser ? <UserIcon /> : <BotIcon />}
-          </div>
-          {indicator == INDICATOR_TYPE.TALKING && (
-            <TalkingSpinner isUser={isUser} />
-          )}
-          {indicator == INDICATOR_TYPE.GENERATING && <LoadingSpinner />}
-        </div>
-        <div>
-          <div
-            className={
-              "whitespace-pre-wrap rounded px-3 py-1.5 max-w-[600px] bg-zinc-800 border " +
-              (!text
-                ? " pulse text-sm text-zinc-300 border-gray-600"
-                : isUser
-                ? " text-zinc-100 border-yellow-500"
-                : " text-zinc-100 border-primary")
-            }
-          >
-            {text ||
-              (isUser
-                ? "Speak into your microphone to talk to the bot..."
-                : "Bot is typing...")}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+import { MemoizedReactMarkdown } from "@/components/markdown";
+import { CodeBlock } from "@/components/ui/code-block";
+import { IconOpenAI, IconUser } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
+import { ChatMessageActions } from "./chat-message-actions";
+
+export interface ChatMessageProps {
+  message: Message;
 }
 
-function BotIcon() {
+export function ChatMessage({ message, ...props }: ChatMessageProps) {
   return (
-    <svg
-      className="w-full h-full"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 640 512"
-    >
-      {/*! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc.*/}
-      <path d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H304zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H400zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224H64V416H48c-26.5 0-48-21.5-48-48V272c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H576V224h16z" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      className="w-full h-full"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 448 512"
-    >
-      {/*! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc.*/}
-      <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
-    </svg>
-  );
-}
-
-function TalkingSpinner({ isUser }: any) {
-  return (
-    <div className={"flex items-center justify-center"}>
+    <div className={cn("group relative flex items-start")} {...props}>
       <div
-        className={
-          "talking [&>span]:" + (isUser ? "bg-yellow-500" : "bg-primary")
-        }
+        className={cn(
+          "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow",
+          message.role === "user"
+            ? "bg-background"
+            : "bg-primary text-primary-foreground"
+        )}
       >
-        {" "}
-        <span /> <span /> <span />{" "}
+        {message.role === "user" ? <IconUser /> : <IconOpenAI />}
       </div>
-    </div>
-  );
-}
+      <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
+        <MemoizedReactMarkdown
+          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+          // remarkPlugins={[remarkGfm, remarkMath]}
+          components={{
+            p({ children }) {
+              return <p className="mb-2 last:mb-0">{children}</p>;
+            },
+            code({ node, inline, className, children, ...props }) {
+              if (children.length) {
+                if (children[0] == "▍") {
+                  return (
+                    <span className="mt-1 cursor-default animate-pulse">▍</span>
+                  );
+                }
 
-function LoadingSpinner() {
-  return (
-    <div className="scale-[0.2] w-6 h-6 flex items-center justify-center">
-      <div className="lds-spinner [&>div:after]:bg-zinc-200">
-        {[...Array(12)].map((_, i) => (
-          <div key={i}></div>
-        ))}
+                children[0] = (children[0] as string).replace("`▍`", "▍");
+              }
+
+              const match = /language-(\w+)/.exec(className || "");
+
+              if (inline) {
+                return (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              }
+
+              return (
+                <CodeBlock
+                  key={Math.random()}
+                  language={(match && match[1]) || ""}
+                  value={String(children).replace(/\n$/, "")}
+                  {...props}
+                />
+              );
+            },
+          }}
+        >
+          {message.content}
+        </MemoizedReactMarkdown>
+        <ChatMessageActions message={message} />
       </div>
     </div>
   );
