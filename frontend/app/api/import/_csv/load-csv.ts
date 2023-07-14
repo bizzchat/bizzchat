@@ -1,10 +1,7 @@
-import * as pdfjsLib from "pdfjs-dist";
-
-import { clean_string } from "../../utils";
-import { LoaderResult } from "../_lib/LoaderResult";
-import { Metadata } from "../_lib/Metadata";
+import { clean_string } from "../_lib/utils";
 
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
+import { LoaderResult, Metadata } from "../_lib/import-types";
 
 class CSVFileLoader {
   async load_data(url: string): Promise<LoaderResult> {
