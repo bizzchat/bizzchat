@@ -9,16 +9,22 @@ import { Database } from "../../types/supabase";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await supabase.auth.signInWithPassword({
+
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    router.push("/chat");
+
+    if (data.user) {
+      router.push("/chat");
+    }
+
     router.refresh();
   };
 
@@ -70,6 +76,8 @@ export default function Login() {
             value={password}
             placeholder="••••••••"
           />
+          {message ? <p> {message} </p> : ""}
+
           <button className="px-4 py-2 mb-6 text-white bg-green-700 rounded">
             Sign In
           </button>
