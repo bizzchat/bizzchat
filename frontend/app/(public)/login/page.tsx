@@ -4,7 +4,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Link } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Database } from "../../types/supabase";
+import { Database } from "../../../types/supabase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -76,7 +76,6 @@ export default function Login() {
             value={password}
             placeholder="••••••••"
           />
-          {message ? <p> {message} </p> : ""}
 
           <button className="px-4 py-2 mb-6 text-white bg-green-700 rounded">
             Sign In
