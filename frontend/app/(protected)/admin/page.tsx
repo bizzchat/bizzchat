@@ -29,12 +29,12 @@ const fileTypeOptions: Option[] = [
 ];
 
 const organizationOptions = [
-  { value: "tfmc", label: "Tim Morehouse" },
+  { value: "tmfc", label: "Tim Morehouse Fencing Club" },
   { value: "test", label: "Testing" },
 ];
 
 const datastoreOptions = [
-  { value: "internal", label: "Internal" },
+  { value: "private", label: "Private" },
   { value: "public", label: "Public" },
 ];
 

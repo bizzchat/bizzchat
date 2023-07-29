@@ -86,49 +86,112 @@ class EmbedChain {
     return chunkers[data_type];
   }
 
-  async add(data_type: URLDataType, url: RemoteInput): Promise<any> {
+  async add(
+    data_type: URLDataType,
+    url: RemoteInput,
+    organization: string,
+    datastore: string
+  ): Promise<any> {
     const loader = this._get_loader(data_type);
     const chunker = this._get_chunker(data_type);
     this.user_asks.push([data_type, url]);
-    let result = await this.load_and_embed(loader, chunker, url);
+    let result = await this.load_and_embed(
+      loader,
+      chunker,
+      url,
+      organization,
+      datastore
+    );
+    console.log(result);
     return result;
   }
 
-  async add_local(data_type: URLDataType, content: LocalInput) {
+  async add_local(
+    data_type: URLDataType,
+    content: LocalInput,
+    organization: string,
+    datastore: string
+  ) {
     const loader = this._get_loader(data_type);
     const chunker = this._get_chunker(data_type);
     this.user_asks.push([data_type, content]);
-    await this.load_and_embed(loader, chunker, content);
+    await this.load_and_embed(
+      loader,
+      chunker,
+      content,
+      organization,
+      datastore
+    );
   }
 
-  async load_and_embed(loader: any, chunker: BaseChunker, src: Input) {
+  async load_and_embed(
+    loader: any,
+    chunker: BaseChunker,
+    src: Input,
+    organization: String,
+    datastore: string
+  ) {
     const embeddings_data = await chunker.create_chunks(loader, src);
 
     let { content, ids, metadatas } = embeddings_data;
 
     let docs = [];
 
-    for (let i = 0; i < ids.length; i++) {
-      docs.push({
-        pageContent: content[i],
-        metadata: { url: metadatas[i].url },
-      });
-    }
-
-    const documents = docs.map(
-      (doc) =>
-        new Document({
-          metadata: { source: doc.metadata.url },
-          pageContent: doc.pageContent,
-        })
+    let existingIds = await this.checkExistngPineconeIds(
+      organization,
+      datastore,
+      ids
     );
-    console.log(ids);
 
-    this.collection.namespace = "mohit";
-    await this.collection.addDocuments(documents, ids);
-    console.log(`Successfully saved ${src}. Total chunks count: ${ids.length}`);
+    const newIds = ids.filter(function (item) {
+      return !existingIds.includes(item);
+    });
 
-    return documents;
+    if (newIds.length >= 1) {
+      for (let i = 0; i < newIds.length; i++) {
+        let index = ids.indexOf(newIds[i]);
+
+        docs.push({
+          pageContent: content[index],
+          metadata: { url: metadatas[index].url },
+          id: ids[index],
+        });
+      }
+
+      const documents = docs.map(
+        (doc) =>
+          new Document({
+            metadata: { source: doc.metadata.url },
+            pageContent: doc.pageContent,
+          })
+      );
+
+      this.collection.namespace = organization + ":" + datastore;
+      await this.collection.addDocuments(documents, ids);
+      console.log(
+        `Successfully saved ${src}. Total New Chunks Saved: ${newIds.length}`
+      );
+
+      return `Successfully saved ${src}. Total New Chunks Saved: ${newIds.length}`;
+    } else {
+      console.log(`Successfully saved ${src}. No New Chunks to Save`);
+      return `Successfully saved ${src}. No New Chunks to Save`;
+    }
+  }
+
+  async checkExistngPineconeIds(
+    organization: String,
+    datastore: string,
+    ids: string[]
+  ) {
+    this.collection.namespace = organization + ":" + datastore;
+    const index = this.db_client.Index("bizzchat");
+    const fetchResult = await index.fetch({
+      ids: ids,
+      namespace: organization + ":" + datastore,
+    });
+
+    return Object.keys(fetchResult.vectors);
   }
 
   async _format_result(results: any): Promise<FormattedResult> {
@@ -142,7 +205,6 @@ class EmbedChain {
     const messages: ChatCompletionRequestMessage[] = [
       { role: "user", content: prompt },
     ];
-    console.log("messages", messages);
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo-0613",
       messages: messages,
@@ -150,8 +212,6 @@ class EmbedChain {
       max_tokens: 1000,
       top_p: 1,
     });
-
-    console.log("response", response);
 
     return (
       response.data.choices[0].message?.content ??
