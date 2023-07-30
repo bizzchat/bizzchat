@@ -1,3 +1,5 @@
+import wordToDocs from "./word-docs";
+
 export function clean_string(text: string): string {
   /*
     This function takes in a string and performs a series of text cleaning operations. 
@@ -28,3 +30,24 @@ export function clean_string(text: string): string {
 
   return cleaned_text;
 }
+
+export const fileBufferToDocs = async (props: {
+  buffer: any;
+  mimeType: string;
+}) => {
+  let docs: string = "";
+
+  switch (props.mimeType) {
+    case "text/csv":
+    case "text/plain":
+    case "application/json":
+    case "text/markdown":
+      docs = new TextDecoder("utf-8").decode(props.buffer);
+      break;
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      docs = await wordToDocs(props.buffer);
+      break;
+  }
+
+  return docs;
+};

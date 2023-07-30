@@ -1,5 +1,7 @@
 type Question = string;
 type Answer = string;
+import { Document as LangchainDocument } from "langchain/document";
+import { z } from "zod";
 
 export type Metadata = {
   url: string;
@@ -11,6 +13,7 @@ export enum URLDataType {
   webpage = "webpage",
   csv = "csv",
   website = "website",
+  drive_file = "drive_file",
 }
 
 export type ChunkResult = {
@@ -30,3 +33,14 @@ export type QnaPair = [Question, Answer];
 export type LoaderResult = { content: any; meta_data: Metadata }[];
 
 export type FormattedResult = string;
+
+export const AcceptedDatasourceMimeTypes = [
+  "text/csv",
+  "text/plain",
+  "text/markdown",
+  "application/pdf",
+  "application/json",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+] as const;
