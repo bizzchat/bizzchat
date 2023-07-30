@@ -26,6 +26,7 @@ const fileTypeOptions: Option[] = [
   { value: URLDataType.pdf, label: "PDF File URL" },
   { value: URLDataType.youtube_video, label: "Youtube Video URL" },
   { value: URLDataType.csv, label: "CSV File URL" },
+  { value: URLDataType.website, label: "Website Domain URL" },
 ];
 
 const organizationOptions = [

@@ -17,13 +17,10 @@ import { BaseVectorDB } from "@/lib/clients/BaseVectorDb";
 import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-import {
-  FormattedResult,
-  Input,
-  LocalInput,
-  RemoteInput,
-  URLDataType,
-} from "./_lib/import-types";
+import { DataSource } from "@/types/database-types";
+import { FormattedResult, Input, URLDataType } from "./_lib/import-types";
+import { WebSiteChunker } from "./_website/chunk-website";
+import { WebSiteLoader } from "./_website/load-website";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -70,6 +67,7 @@ class EmbedChain {
     const loaders: { [t in URLDataType]: BaseLoader } = {
       pdf: new PdfFileLoader(),
       webpage: new WebPageLoader(),
+      website: new WebSiteLoader(),
       youtube_video: new YouTubeLoader(),
       csv: new CSVFileLoader(),
     };
@@ -80,48 +78,31 @@ class EmbedChain {
     const chunkers: { [t in URLDataType]: BaseChunker } = {
       pdf: new PdfFileChunker(),
       webpage: new WebPageChunker(),
+      website: new WebSiteChunker(),
       youtube_video: new YouTubeChunker(),
       csv: new CSVFileChunker(),
     };
     return chunkers[data_type];
   }
 
-  async add(
-    data_type: URLDataType,
-    url: RemoteInput,
-    organization: string,
-    datastore: string
-  ): Promise<any> {
-    const loader = this._get_loader(data_type);
-    const chunker = this._get_chunker(data_type);
-    this.user_asks.push([data_type, url]);
+  async add({
+    type,
+    meta,
+    organization,
+    datastore_id,
+  }: DataSource): Promise<any> {
+    const loader = this._get_loader(type);
+    const chunker = this._get_chunker(type);
+    this.user_asks.push([type, meta.url]);
     let result = await this.load_and_embed(
       loader,
       chunker,
-      url,
+      meta.url,
       organization,
-      datastore
+      datastore_id
     );
     console.log(result);
     return result;
-  }
-
-  async add_local(
-    data_type: URLDataType,
-    content: LocalInput,
-    organization: string,
-    datastore: string
-  ) {
-    const loader = this._get_loader(data_type);
-    const chunker = this._get_chunker(data_type);
-    this.user_asks.push([data_type, content]);
-    await this.load_and_embed(
-      loader,
-      chunker,
-      content,
-      organization,
-      datastore
-    );
   }
 
   async load_and_embed(
@@ -220,7 +201,7 @@ class EmbedChain {
   }
 
   async retrieve_from_database(input_query: string) {
-    this.collection.namespace = "mohit";
+    this.collection.namespace = "test:5f0b4d20-e0f0-4488-9cf3-6b91ad6a2ee4";
     const results = await this.collection.similaritySearch(input_query, 2);
 
     const result_formatted = await this._format_result(results);

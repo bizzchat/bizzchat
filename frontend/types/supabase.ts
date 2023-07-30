@@ -11,34 +11,43 @@ export interface Database {
     Tables: {
       datasources: {
         Row: {
-          created_at: string | null
-          datastore_id: string | null
+          created_at: string
+          datastore_id: string
           id: string
           meta: Json
+          organization: string
           status: Database["public"]["Enums"]["datasources_status_enum"]
-          type: string | null
+          type: string
         }
         Insert: {
-          created_at?: string | null
-          datastore_id?: string | null
+          created_at?: string
+          datastore_id: string
           id?: string
           meta?: Json
+          organization: string
           status?: Database["public"]["Enums"]["datasources_status_enum"]
-          type?: string | null
+          type: string
         }
         Update: {
-          created_at?: string | null
-          datastore_id?: string | null
+          created_at?: string
+          datastore_id?: string
           id?: string
           meta?: Json
+          organization?: string
           status?: Database["public"]["Enums"]["datasources_status_enum"]
-          type?: string | null
+          type?: string
         }
         Relationships: [
           {
             foreignKeyName: "datasources_datastore_id_fkey"
             columns: ["datastore_id"]
             referencedRelation: "datastores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "datasources_organization_fkey"
+            columns: ["organization"]
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           }
         ]

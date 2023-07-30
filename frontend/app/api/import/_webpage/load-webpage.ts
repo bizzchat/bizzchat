@@ -5,7 +5,11 @@ import { JSDOM } from "jsdom";
 
 class WebPageLoader {
   async load_data(url: string) {
-    const response = await axios.get(url);
+    const response = await axios(addSlashUrl(url), {
+      headers: {
+        "User-Agent": Date.now().toString(),
+      },
+    });
     const html = response.data;
     const dom = new JSDOM(html);
     const document = dom.window.document;
@@ -46,5 +50,17 @@ class WebPageLoader {
     return output;
   }
 }
+
+const addSlashUrl = (url: string) => {
+  const urlObj = new URL(url);
+
+  // Check if the pathname already ends with a slash
+  if (!urlObj.pathname.endsWith("/")) {
+    // If not, add a trailing slash to the pathname
+    urlObj.pathname += "/";
+  }
+
+  return urlObj.toString();
+};
 
 export { WebPageLoader };
