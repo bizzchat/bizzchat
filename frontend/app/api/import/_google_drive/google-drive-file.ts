@@ -7,13 +7,11 @@ import {
 import { GoogleDriveManager } from "@/lib/clients/google-drive-manager";
 import { fileBufferToDocs } from "../_lib/utils";
 
-// import { fileBufferToDocs } from "../_lib/utils";
-
 export class GoogleDriveFileLoader {
   async load_data(url: string): Promise<LoaderResult> {
     const driveManager = new GoogleDriveManager({
       accessToken:
-        "ya29.a0AbVbY6OQwzbAg_LtluDTJmRPdDBSfLJIFuX0LzRV7JShRmdQvJm-pkQF8x8OqKkgnSjHkX16ugkKzjCEVo_KXcdSHDFSUGLJrMeHOOcQQu6wFCoe9pLeyNOeUbL5oCSu6OIS3MQunxdgtHaFgbnediDJkA4uwUTnmgaCgYKAbsSARESFQFWKvPlkASd3aTTgOmbcaY9dZcrbw0169",
+        "ya29.a0AbVbY6M6-O9LrcPrNZiRtAaI3y-lNPa3RIufpEa8xJ46pJ0FId1GuK6bCOCZYoo71wDXADGhrrCbPPMYrBwm9Vm9iZoyvNv5HiaZTeBV0uqtviVJgSD-hsRUsHhQUoBWYZCAwDczHoTZ1lgiPnnf3end9y3G7kvpRAaCgYKAYMSARESFQFWKvPlnSz2oyWesKbPnDHEInsh2w0169",
       refreshToken:
         "1//04BibwCLiFLLFCgYIARAAGAQSNwF-L9IrmV8EVkUcDvOHZeEp75HswU5NKchfGXBHX6tQq61Lkvy0lhWj3iE0KtKQSMRFyU0Lj5g",
     });
@@ -56,16 +54,17 @@ export class GoogleDriveFileLoader {
       fields: "webViewLink",
     });
 
+    const meta_data: Metadata = { url: webViewLink as string };
+
     let content = "";
     const mimeType = result?.headers?.["content-type"];
-
+    console.log(mimeType);
     if (AcceptedDatasourceMimeTypes.includes(mimeType!)) {
       content = await fileBufferToDocs({
         buffer: fileContents,
         mimeType,
       });
     }
-    const meta_data: Metadata = { url: url };
 
     let output = [];
     output.push({

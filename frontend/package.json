@@ -49,6 +49,7 @@
     "request": "^2.88.2",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
+    "xlsx": "^0.18.5",
     "youtube-transcript": "^1.0.6"
   },
   "devDependencies": {

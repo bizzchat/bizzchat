@@ -23,6 +23,7 @@ import { WebSiteChunker } from "./_website/chunk-website";
 import { WebSiteLoader } from "./_website/load-website";
 import { GoogleDriveFileChunker } from "./_google_drive/chunk-drive-file";
 import { GoogleDriveFileLoader } from "./_google_drive/google-drive-file";
+import { GoogleDriveFolderLoader } from "./_google_drive/google-drive-folder";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
