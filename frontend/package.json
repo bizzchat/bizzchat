@@ -28,10 +28,12 @@
     "dotenv": "^16.3.1",
     "encoding": "^0.1.13",
     "filereader": "^0.10.3",
+    "googleapis": "^123.0.0",
     "hashlib": "^1.0.1",
     "jsdom": "^22.1.0",
     "langchain": "^0.0.99",
     "lucide-react": "^0.258.0",
+    "mammoth": "^1.6.0",
     "next": "^13.4.9",
     "next-themes": "^0.2.1",
     "node-gyp": "^9.4.0",
@@ -47,6 +49,7 @@
     "request": "^2.88.2",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
+    "xlsx": "^0.18.5",
     "youtube-transcript": "^1.0.6"
   },
   "devDependencies": {

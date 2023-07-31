@@ -21,6 +21,9 @@ import { DataSource } from "@/types/database-types";
 import { FormattedResult, Input, URLDataType } from "./_lib/import-types";
 import { WebSiteChunker } from "./_website/chunk-website";
 import { WebSiteLoader } from "./_website/load-website";
+import { GoogleDriveFileChunker } from "./_google_drive/chunk-drive-file";
+import { GoogleDriveFileLoader } from "./_google_drive/google-drive-file";
+import { GoogleDriveFolderLoader } from "./_google_drive/google-drive-folder";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -70,6 +73,7 @@ class EmbedChain {
       website: new WebSiteLoader(),
       youtube_video: new YouTubeLoader(),
       csv: new CSVFileLoader(),
+      drive_file: new GoogleDriveFileLoader(),
     };
     return loaders[data_type];
   }
@@ -81,6 +85,7 @@ class EmbedChain {
       website: new WebSiteChunker(),
       youtube_video: new YouTubeChunker(),
       csv: new CSVFileChunker(),
+      drive_file: new GoogleDriveFileChunker(),
     };
     return chunkers[data_type];
   }
