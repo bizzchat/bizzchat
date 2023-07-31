@@ -10,6 +10,7 @@ export enum URLDataType {
   youtube_video = "youtube_video",
   webpage = "webpage",
   csv = "csv",
+  website = "website",
 }
 
 export type ChunkResult = {
