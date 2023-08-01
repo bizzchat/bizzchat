@@ -205,8 +205,12 @@ class EmbedChain {
     );
   }
 
-  async retrieve_from_database(input_query: string) {
-    this.collection.namespace = "test:5f0b4d20-e0f0-4488-9cf3-6b91ad6a2ee4";
+  async retrieve_from_database(
+    input_query: string,
+    organization_id: string,
+    datastore_id: string
+  ) {
+    this.collection.namespace = organization_id + ":" + datastore_id;
     const results = await this.collection.similaritySearch(input_query, 2);
 
     const result_formatted = await this._format_result(results);
@@ -218,8 +222,16 @@ class EmbedChain {
     return `Use the following pieces of context to answer the query at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.\n${context}\nQuery: ${input_query}\nHelpful Answer:`;
   }
 
-  async query(input_query: string) {
-    const context = await this.retrieve_from_database(input_query);
+  async query(
+    input_query: string,
+    organization_id: string,
+    datastore_id: string
+  ) {
+    const context = await this.retrieve_from_database(
+      input_query,
+      organization_id,
+      datastore_id
+    );
     const prompt = this.generate_prompt(input_query, context);
     // const answer = await this.get_openai_answer(prompt);
     return prompt;
