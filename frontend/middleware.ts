@@ -13,6 +13,7 @@ export async function middleware(req: NextRequest) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  console.log("Middleware Call");
 
   const redirectUrl = req.nextUrl.clone();
 
