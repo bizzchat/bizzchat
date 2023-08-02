@@ -1,9 +1,14 @@
 "use client";
 
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Link } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { setTimeout } from "timers";
 import { Database } from "../../../types/supabase";
 
 export default function Login() {
@@ -11,10 +16,16 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const supabase = createClientComponentClient<Database>();
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
 
     const { error, data } = await supabase.auth.signInWithPassword({
       email,
@@ -30,57 +41,107 @@ export default function Login() {
 
   return (
     <div>
-      <div className="flex flex-col w-full gap-2 px-8 mx-auto sm:max-w-md grow">
-        <Link
-          href="/"
-          className="absolute flex items-center px-4 py-2 text-sm no-underline rounded-md left-8 top-8 text-foreground bg-btn-background hover:bg-btn-background-hover group"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>{" "}
-          Back
-        </Link>
-        <form
-          className="flex flex-col justify-center flex-1 w-full gap-2 text-foreground"
-          onSubmit={handleSignIn}
-        >
-          <label className="text-md" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="px-4 py-2 mb-6 border rounded-md bg-inherit"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            placeholder="you@example.com"
-          />
-          <label className="text-md" htmlFor="password">
-            Password
-          </label>
-          <input
-            className="px-4 py-2 mb-6 border rounded-md bg-inherit"
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            placeholder="••••••••"
-          />
+      <div className="md:hidden">
+        <Image
+          src="/examples/authentication-light.png"
+          width={1280}
+          height={843}
+          alt="Authentication"
+          className="block dark:hidden"
+        />
+        <Image
+          src="/examples/authentication-dark.png"
+          width={1280}
+          height={843}
+          alt="Authentication"
+          className="hidden dark:block"
+        />
+      </div>
+      <div className="container relative flex-col items-center justify-center hidden h-screen md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <div className="relative flex-col hidden h-full p-10 text-white bg-muted dark:border-r lg:flex">
+          <div className="relative z-20 flex flex-col justify-center w-full h-full mx-auto">
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
+              Access your Own{" "}
+              <span className="bg-gradient-to-r from-[#1E26FF] to-[#FF04FF] bg-clip-text text-transparent">
+                {" "}
+                ChatGPT{" "}
+              </span>{" "}
+              with ALL Your Business Content.
+            </h1>
+            <p className="max-w-[600px] pt-4 text-lg text-muted-foreground">
+              Accurate ChatGPT responses from your content without making up
+              facts. All within a secure, privacy-first, business-grade
+              platform.
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <form
+              className="flex flex-col justify-center flex-1 w-full gap-4 text-foreground"
+              onSubmit={handleSignIn}
+            >
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  name="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  type="email"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  autoCorrect="off"
+                  disabled={isLoading}
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  placeholder="••••••••"
+                />
+              </div>
 
-          <button className="px-4 py-2 mb-6 text-white bg-green-700 rounded">
-            Sign In
-          </button>
-        </form>
+              <Button disabled={isLoading}>
+                {isLoading && (
+                  <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
+                )}
+                Sign In
+              </Button>
+            </form>
+          </div>
+          <div className="relative overflow-hidden isolate">
+            <div className="px-4 py-20"></div>
+            <svg
+              viewBox="0 0 1024 1024"
+              className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-x-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]"
+              aria-hidden="true"
+            >
+              <circle
+                cx="512"
+                cy="512"
+                r="512"
+                fill="url(#8d958450-c69f-4251-94bc-4e091a323369)"
+                fill-opacity="0.7"
+              ></circle>
+              <defs>
+                <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
+                  <stop stop-color="#1E26FF"></stop>
+                  <stop offset="1" stop-color="#FF04FF"></stop>
+                </radialGradient>
+              </defs>
+            </svg>
+            <div className="max-w-2xl pb-10 mx-auto text-center">
+              <h2 className="w-full text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Join the AI Revolution
+              </h2>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
