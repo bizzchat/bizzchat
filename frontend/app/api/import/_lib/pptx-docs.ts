@@ -1,7 +1,8 @@
 import { DOMParser } from "@xmldom/xmldom";
+import { clean_string } from "./utils";
 
 const pptxToDocs = async (buffer: ArrayBuffer) => {
-  const JSZip = await (await import("jszip")).default;
+  const JSZip = (await import("jszip")).default;
 
   const zip = await JSZip.loadAsync(buffer);
   const slidePromises = [] as any[];
@@ -26,7 +27,8 @@ const pptxToDocs = async (buffer: ArrayBuffer) => {
     });
   });
 
-  return all.join("\n\n");
+  const content = clean_string(all.join("\n\n"));
+  return content;
 };
 
 export default pptxToDocs;

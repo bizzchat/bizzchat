@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       .insert({
         type: req_params.file_type,
         datastore_id: dataStores[0].id,
-        meta: { url: req_params.url, characters: 100 },
+        meta: { url: req_params.url, characters: 0 },
         organization: req_params.organization,
       });
 

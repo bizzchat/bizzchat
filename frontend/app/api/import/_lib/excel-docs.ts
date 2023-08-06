@@ -1,3 +1,5 @@
+import { clean_string } from "./utils";
+
 const excelToDocs = async (buffer: ArrayBuffer) => {
   let text = "";
   const XLSX = await import("xlsx");
@@ -9,8 +11,8 @@ const excelToDocs = async (buffer: ArrayBuffer) => {
     const sheetData = XLSX.utils.sheet_to_csv(worksheet);
     text += sheetData;
   });
-
-  return text;
+  const content = clean_string(text);
+  return content;
 };
 
 export default excelToDocs;

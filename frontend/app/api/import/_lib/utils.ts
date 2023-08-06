@@ -1,6 +1,7 @@
 import wordToDocs from "./word-docs";
 import excelToDocs from "./excel-docs";
 import pptxToDocs from "./pptx-docs";
+import { pdfToDocs } from "./pdf-docs";
 
 export function clean_string(text: string): string {
   text = text.replace(/\n/g, " ");
@@ -39,6 +40,9 @@ export const fileBufferToDocs = async (props: {
       break;
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
       docs = await excelToDocs(props.buffer);
+      break;
+    case "application/pdf":
+      docs = await pdfToDocs(props.buffer);
       break;
     default:
       break;
