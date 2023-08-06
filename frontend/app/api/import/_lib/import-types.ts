@@ -14,6 +14,7 @@ export enum URLDataType {
   csv = "csv",
   website = "website",
   drive_file = "drive_file",
+  drive_folder = "drive_folder",
 }
 
 export type ChunkResult = {
@@ -43,4 +44,6 @@ export const AcceptedDatasourceMimeTypes = [
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.google-apps.spreadsheet",
+  "application/vnd.google-apps.document",
 ] as const;

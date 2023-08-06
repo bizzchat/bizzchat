@@ -28,6 +28,7 @@ const fileTypeOptions: Option[] = [
   { value: URLDataType.csv, label: "CSV File URL" },
   { value: URLDataType.website, label: "Website Domain URL" },
   { value: URLDataType.drive_file, label: "Google Drive File ID" },
+  { value: URLDataType.drive_folder, label: "Google Drive Folder ID" },
 ];
 
 const organizationOptions = [

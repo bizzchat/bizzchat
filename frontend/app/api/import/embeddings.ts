@@ -74,6 +74,7 @@ class EmbedChain {
       youtube_video: new YouTubeLoader(),
       csv: new CSVFileLoader(),
       drive_file: new GoogleDriveFileLoader(),
+      drive_folder: new GoogleDriveFolderLoader(),
     };
     return loaders[data_type];
   }
@@ -86,6 +87,7 @@ class EmbedChain {
       youtube_video: new YouTubeChunker(),
       csv: new CSVFileChunker(),
       drive_file: new GoogleDriveFileChunker(),
+      drive_folder: new GoogleDriveFileChunker(),
     };
     return chunkers[data_type];
   }
@@ -106,7 +108,7 @@ class EmbedChain {
       organization,
       datastore_id
     );
-    console.log(result);
+
     return result;
   }
 
@@ -152,8 +154,10 @@ class EmbedChain {
           })
       );
 
+      // saving data to pinecone vector DB
       this.collection.namespace = organization + ":" + datastore;
       await this.collection.addDocuments(documents, ids);
+
       console.log(
         `Successfully saved ${src}. Total New Chunks Saved: ${newIds.length}`
       );
