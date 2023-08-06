@@ -1,5 +1,8 @@
-import { Input, LoaderResult } from "../_lib/import-types";
+import { LoaderResult } from "../_lib/import-types";
 
 export abstract class BaseLoader {
-  abstract load_data(src: Input): Promise<LoaderResult>;
+  abstract load_data(
+    src: string,
+    datasource_id?: string
+  ): Promise<LoaderResult>;
 }

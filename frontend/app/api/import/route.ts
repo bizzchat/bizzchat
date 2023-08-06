@@ -1,23 +1,21 @@
+import { serverSupabaseClient } from "@/core/supabase/supabase-server";
+import { DataSource } from "@/types/database-types";
 import { NextResponse } from "next/server";
 import { EmbedChain } from "./embeddings";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase";
-
-import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
-  const supabase = createRouteHandlerClient<Database>({ cookies });
+  const supabase = serverSupabaseClient();
   const embedchain = new EmbedChain();
   await embedchain.init_app;
-  const record = (await req.json()).record;
+  const datasource: DataSource = (await req.json()).record;
 
-  const result = await embedchain.add(record);
+  const result = await embedchain.add(datasource);
 
   // update status of datasource indexed
-  const { error: updateError, data } = await supabase
+  const { error: updateError } = await supabase
     .from("datasources")
     .update({ status: "ready" })
-    .eq("id", record.id);
+    .eq("id", datasource.id);
 
   if (updateError) {
     throw updateError;

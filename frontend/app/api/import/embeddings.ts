@@ -18,12 +18,12 @@ import { PineconeDB } from "@/lib/clients/pinecone-client";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
 import { DataSource } from "@/types/database-types";
-import { FormattedResult, Input, URLDataType } from "./_lib/import-types";
-import { WebSiteChunker } from "./_website/chunk-website";
-import { WebSiteLoader } from "./_website/load-website";
 import { GoogleDriveFileChunker } from "./_google_drive/chunk-drive-file";
 import { GoogleDriveFileLoader } from "./_google_drive/google-drive-file";
 import { GoogleDriveFolderLoader } from "./_google_drive/google-drive-folder";
+import { FormattedResult, URLDataType } from "./_lib/import-types";
+import { WebSiteChunker } from "./_website/chunk-website";
+import { WebSiteLoader } from "./_website/load-website";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -34,7 +34,7 @@ class EmbedChain {
   db_client: any;
   // TODO: Definitely assign
   collection!: PineconeStore;
-  user_asks: [URLDataType, Input][] = [];
+  user_asks: [URLDataType, string][] = [];
   init_app: Promise<void>;
 
   constructor(db: BaseVectorDB | null = null) {
@@ -92,16 +92,13 @@ class EmbedChain {
     return chunkers[data_type];
   }
 
-  async add({
-    type,
-    meta,
-    organization,
-    datastore_id,
-  }: DataSource): Promise<any> {
+  async add(datasource: DataSource): Promise<any> {
+    const { id, type, meta, datastore_id, organization } = datasource;
     const loader = this._get_loader(type);
     const chunker = this._get_chunker(type);
     this.user_asks.push([type, meta.url]);
     let result = await this.load_and_embed(
+      id,
       loader,
       chunker,
       meta.url,
@@ -113,13 +110,18 @@ class EmbedChain {
   }
 
   async load_and_embed(
+    datasource_id: string,
     loader: any,
     chunker: BaseChunker,
-    src: Input,
+    src: string,
     organization: String,
     datastore: string
   ) {
-    const embeddings_data = await chunker.create_chunks(loader, src);
+    const embeddings_data = await chunker.create_chunks(
+      loader,
+      src,
+      datasource_id
+    );
 
     let { content, ids, metadatas } = embeddings_data;
 

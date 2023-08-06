@@ -1,7 +1,5 @@
 type Question = string;
 type Answer = string;
-import { Document as LangchainDocument } from "langchain/document";
-import { z } from "zod";
 
 export type Metadata = {
   url: string;
@@ -22,12 +20,6 @@ export type ChunkResult = {
   ids: string[];
   metadatas: Metadata[];
 };
-
-export type RemoteInput = string;
-
-export type LocalInput = QnaPair;
-
-export type Input = RemoteInput | LocalInput;
 
 export type QnaPair = [Question, Answer];
 

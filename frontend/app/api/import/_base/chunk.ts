@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { ChunkResult, Input, LoaderResult } from "../_lib/import-types";
+import { ChunkResult, LoaderResult } from "../_lib/import-types";
 import { BaseLoader } from "./load";
 
 class BaseChunker {
@@ -9,10 +9,14 @@ class BaseChunker {
     this.text_splitter = text_splitter;
   }
 
-  async create_chunks(loader: BaseLoader, url: Input): Promise<ChunkResult> {
+  async create_chunks(
+    loader: BaseLoader,
+    url: string,
+    datasource_id: string
+  ): Promise<ChunkResult> {
     const documents: ChunkResult["content"] = [];
     const ids: ChunkResult["ids"] = [];
-    const datas: LoaderResult = await loader.load_data(url);
+    const datas: LoaderResult = await loader.load_data(url, datasource_id);
     const metadatas: ChunkResult["metadatas"] = [];
     for (const data of datas) {
       const content = data["content"];

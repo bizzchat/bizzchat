@@ -125,7 +125,7 @@ export default function Login() {
                 cy="512"
                 r="512"
                 fill="url(#8d958450-c69f-4251-94bc-4e091a323369)"
-                fill-opacity="0.7"
+                fillOpacity="0.7"
               ></circle>
               <defs>
                 <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
