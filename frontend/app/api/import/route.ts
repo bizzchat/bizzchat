@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
   const result = await embedchain.add(record);
 
+  // update status of datasource indexed
   const { error: updateError, data } = await supabase
     .from("datasources")
     .update({ status: "ready" })
