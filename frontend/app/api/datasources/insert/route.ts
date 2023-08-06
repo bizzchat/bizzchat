@@ -1,20 +1,17 @@
-import { Database } from "@/types/supabase";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { createServerSupabaseClient } from "@/core/supabase/supabase-server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient<Database>({ cookies });
-  const req_params = await req.json();
+  const supabase = createServerSupabaseClient();
+  const { organization_id, file_type, url, datastore } = await req.json();
 
   try {
     // Fetch data from the source table
-    const { data: dataStores, error: sourceError } = await supabase
+    const { data: dataStores } = await supabase
       .from("datastores")
       .select("id")
-      .eq("name", req_params.datastore)
-      .eq("organization_id", req_params.organization);
+      .eq("name", datastore)
+      .eq("organization_id", organization_id);
 
     if (!dataStores) {
       throw new Error("datastore: not found");
@@ -24,10 +21,10 @@ export async function POST(req: NextRequest) {
     const { error: insertError, data } = await supabase
       .from("datasources")
       .insert({
-        type: req_params.file_type,
+        type: file_type,
         datastore_id: dataStores[0].id,
-        meta: { url: req_params.url, characters: 0 },
-        organization: req_params.organization,
+        meta: { url: url, characters: 0 },
+        organization: organization_id,
       });
 
     if (insertError) {
