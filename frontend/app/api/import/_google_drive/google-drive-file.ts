@@ -12,10 +12,8 @@ import { Readable } from "stream";
 export class GoogleDriveFileLoader {
   async load_data(fileUrl: string): Promise<LoaderResult> {
     const driveManager = new GoogleDriveManager({
-      accessToken:
-        "ya29.a0AbVbY6M6-O9LrcPrNZiRtAaI3y-lNPa3RIufpEa8xJ46pJ0FId1GuK6bCOCZYoo71wDXADGhrrCbPPMYrBwm9Vm9iZoyvNv5HiaZTeBV0uqtviVJgSD-hsRUsHhQUoBWYZCAwDczHoTZ1lgiPnnf3end9y3G7kvpRAaCgYKAYMSARESFQFWKvPlnSz2oyWesKbPnDHEInsh2w0169",
-      refreshToken:
-        "1//04BibwCLiFLLFCgYIARAAGAQSNwF-L9IrmV8EVkUcDvOHZeEp75HswU5NKchfGXBHX6tQq61Lkvy0lhWj3iE0KtKQSMRFyU0Lj5g",
+      accessToken: process.env.GOOLGE_ACCESS_TOKEN,
+      refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
     });
 
     await driveManager.refreshAuth();
@@ -101,7 +99,6 @@ export class GoogleDriveFileLoader {
       meta_data: meta_data,
     });
 
-    console.log(output);
     return output;
   }
 }
