@@ -1,5 +1,5 @@
 import { EmbedChain } from "@/app/api/import/embeddings";
-import { createServerSupabaseClient } from "@/core/supabase/supabase-server";
+import { serverSupabaseClient } from "@/core/supabase/supabase-server";
 import { LangChainStream, Message, StreamingTextResponse } from "ai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { AIChatMessage, HumanChatMessage } from "langchain/schema";
@@ -10,7 +10,7 @@ const datastore_name = "private";
 export async function POST(req: Request) {
   var { messages } = await req.json();
 
-  const supabase = createServerSupabaseClient();
+  const supabase = serverSupabaseClient();
   const { data: organization } = await supabase
     .from("profiles")
     .select("organization_id");

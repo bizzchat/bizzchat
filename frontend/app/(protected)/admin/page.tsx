@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AdminFormInput } from "@/types/forms";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 const fileTypeOptions: Option[] = [
@@ -46,21 +47,14 @@ type Option = {
   label: string;
 };
 
-interface IFormInput {
-  url: string;
-  file_type: URLDataType;
-  organization: string;
-  datastore: string;
-}
-
 export default function Admin() {
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>();
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  } = useForm<AdminFormInput>();
+  const onSubmit: SubmitHandler<AdminFormInput> = async (data) => {
     console.log(data);
     const res = await fetch("/api/datasources/insert", {
       method: "POST",

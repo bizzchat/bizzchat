@@ -1,34 +1,45 @@
 import { LoaderResult } from "@/app/api/import/_lib/import-types";
+import { serverSupabaseClient } from "@/core/supabase/supabase-server";
 import { getWebPage } from "../_utils/get-web-page";
 
+const PAGELIMIT = Number(process.env.PAGELIMIT) ?? 5;
+
 class WebSiteLoader {
-  async load_data(startUrl: string): Promise<LoaderResult> {
+  async load_data(
+    startUrl: string,
+    datasource_id: string
+  ): Promise<LoaderResult> {
+    const supabase = serverSupabaseClient();
     // Create a set to track visited URLs
     const visitedUrls = new Set<string>();
-    const pageLimit = 5;
     let urls = [startUrl];
     const output = [];
 
-    while (urls.length > 0) {
-      if (visitedUrls.size >= pageLimit) break;
-
+    while (urls.length > 0 && visitedUrls.size < PAGELIMIT) {
       const url = urls.shift()!;
       if (visitedUrls.has(url)) continue;
-      console.log("fetching url", url, visitedUrls, urls);
+
+      console.log("fetching url: ", url);
       visitedUrls.add(url);
-
       const page = await getWebPage(url);
-      console.log("page fetch completed", page);
       const links = getLinks(page.linkElements, startUrl, visitedUrls);
-      console.log("links", links);
 
-      if (urls.length < pageLimit) urls = [...urls, ...links];
+      urls = [...urls, ...links];
+      urls = [...new Set(urls)];
 
       output.push({
         content: page.content,
         meta_data: page.meta_data,
       });
     }
+
+    // update datasource with meta
+    const { error: updateError } = await supabase
+      .from("datasources")
+      .update({
+        meta: { url: startUrl, characters: 0, pages: [...visitedUrls] },
+      })
+      .eq("id", datasource_id);
 
     return output;
   }
