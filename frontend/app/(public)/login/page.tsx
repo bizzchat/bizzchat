@@ -4,12 +4,11 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useSupabase } from "@/core/supabase/supabase-provider";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { setTimeout } from "timers";
-import { Database } from "../../../types/supabase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ export default function Login() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const supabase = createClientComponentClient<Database>();
+  const { supabase } = useSupabase();
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

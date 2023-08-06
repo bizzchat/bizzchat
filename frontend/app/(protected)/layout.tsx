@@ -1,7 +1,8 @@
+import "@/app/globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
+import SupabaseProvider from "@/core/supabase/supabase-provider";
 import { Inter } from "next/font/google";
-import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +24,12 @@ export default function RootLayout({
         }
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="relative flex flex-col min-h-screen">
-            <SiteHeader />
-            <div className="flex flex-col flex-1 ">{children}</div>
-          </div>
+          <SupabaseProvider>
+            <div className="relative flex flex-col min-h-screen">
+              <SiteHeader />
+              <div className="flex flex-col flex-1 ">{children}</div>
+            </div>
+          </SupabaseProvider>
         </ThemeProvider>
       </body>
     </html>

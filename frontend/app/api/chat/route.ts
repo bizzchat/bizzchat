@@ -1,9 +1,8 @@
 import { EmbedChain } from "@/app/api/import/embeddings";
+import { createServerSupabaseClient } from "@/core/supabase/supabase-server";
 import { LangChainStream, Message, StreamingTextResponse } from "ai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { AIChatMessage, HumanChatMessage } from "langchain/schema";
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // Hardcoded - need to be pass from client side
 const datastore_name = "private";
@@ -11,12 +10,12 @@ const datastore_name = "private";
 export async function POST(req: Request) {
   var { messages } = await req.json();
 
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createServerSupabaseClient();
   const { data: organization } = await supabase
     .from("profiles")
     .select("organization_id");
 
-  const organization_id = organization![0].organization_id;
+  const organization_id = organization![0].organization_id!;
 
   const { data: datastore } = await supabase
     .from("datastores")

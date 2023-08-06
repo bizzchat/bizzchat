@@ -2,15 +2,14 @@
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { siteConfig } from "@/config/site";
-import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useSupabase } from "@/core/supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import { MainNav } from "./main-nav";
 import { Button } from "./ui/button";
 
 export function SiteHeader() {
   const router = useRouter();
-  const supabase = createClientComponentClient<Database>();
+  const { supabase } = useSupabase();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

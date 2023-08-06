@@ -14,7 +14,7 @@ export function PromptFooterText({
       )}
       {...props}
     >
-      Powered by <b>@timmorehousefencingclub</b>
+      <b>Protected Company Data</b> for internal use only.
     </p>
   );
 }
