@@ -21,11 +21,17 @@ export class GoogleDriveFolderLoader {
 
     await driveManager.refreshAuth();
 
+    // Split the URL string by the delimiter "/"
+    const parts = folderUrl.split("/");
+
+    // Find the index of "d/" in the array
+    const index = parts.findIndex((part) => part === "folders");
+
+    // Get the text after "d/"
+    const fileId = parts[index + 1];
+
     const files = await driveManager.listFilesRecursive({
-      folderId: folderUrl.replace(
-        "https://drive.google.com/drive/u/0/folders/",
-        ""
-      ) as string,
+      folderId: fileId as string,
     });
 
     let output = [];
