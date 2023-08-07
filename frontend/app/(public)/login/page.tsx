@@ -129,8 +129,8 @@ export default function Login() {
               ></circle>
               <defs>
                 <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
-                  <stop stop-color="#1E26FF"></stop>
-                  <stop offset="1" stop-color="#FF04FF"></stop>
+                  <stop stopColor="#1E26FF"></stop>
+                  <stop offset="1" stopColor="#FF04FF"></stop>
                 </radialGradient>
               </defs>
             </svg>

@@ -17,7 +17,7 @@ interface NavItem {
 export function MainNav({ items }: MainNavProps) {
   const org_name = "Tim Morehouse Fencing Club";
   const org_logo =
-    "https://ofxtxvtdaaypupsvigri.supabase.co/storage/v1/object/public/public/company/logo-image.png";
+    "https://ofxtxvtdaaypupsvigri.supabase.co/storage/v1/object/public/public/companies/tfmc/logo-image.png";
 
   return (
     <div className="flex gap-6 md:gap-10">
