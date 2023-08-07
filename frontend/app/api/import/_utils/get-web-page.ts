@@ -9,14 +9,11 @@ export const getWebPage = async (url: string) => {
   const dom = new JSDOM(html);
   const document = dom.window.document;
   const unwantedTags = [
-    "nav",
     "aside",
     "form",
-    "header",
     "noscript",
     "svg",
     "canvas",
-    "footer",
     "script",
     "style",
   ];
