@@ -13,7 +13,7 @@ class PineconeDB extends BaseVectorDB {
   async get_client_and_collection(): Promise<void> {
     this.client = new PineconeClient();
     await this.client.init({
-      apiKey: "ec394e05-d39a-40a4-8eb7-f639e90d1d6b",
+      apiKey: process.env.PINECONE_API_KEY!,
       environment: "asia-southeast1-gcp-free",
     });
     const index = this.client.Index("bizzchat");
